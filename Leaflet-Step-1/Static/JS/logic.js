@@ -1,4 +1,4 @@
-// Define street map and dark map layers
+// Define street map & dark map layers
 var streetmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
   attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
   tileSize: 512,
@@ -8,7 +8,7 @@ var streetmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}
   accessToken: API_KEY
 });
 
-// Create  map, with layers
+// Create  map, w/layers
 var myMap = L.map("map", {
   center: [
     39.00, -98
@@ -38,17 +38,17 @@ d3.json(queryUrl, function(data) {
   function mapColor(mag) {
     switch (true) {
       case mag > 5:
-        return "#ea2c2c";
+        return "#ef233c";
       case mag > 4:
         return "#eaa92c";
       case mag > 3:
-        return "#d5ea2c";
+        return "#be0aff";
       case mag > 2:
-        return "#92ea2c";
+        return "#f72585";
       case mag > 1:
         return "#2ceabf";
       default:
-        return "#2c99ea";
+        return "#2d00f7";
     }
   }
 
@@ -84,7 +84,7 @@ d3.json(queryUrl, function(data) {
     var div = L.DomUtil.create("div", "info legend");
 
     var grades = [0, 1, 2, 3, 4, 5];
-    var colors = ["#2c99ea", "#2ceabf", "#92ea2c", "#d5ea2c","#eaa92c", "#ea2c2c"];
+    var colors = ["#2d00f7", "#2ceabf", "#f72585", "#be0aff","#eaa92c", "#ef233c"];
 
 
   // loop thru colors
