@@ -112,22 +112,10 @@ var overlays = {
 var mymap = L.map('mymap', {
     center: [40, -99],
     zoom: 4.3,
-    // timeDimension: true,
-    // timeDimensionOptions: {
-    //     timeInterval: "2018-04-01/2018-04-05",
-    //     period: "PT1H"
-    // },
-    // timeDimensionControl: true,
     layers: [streetMap, earthquakes, plateBoundary]
 });
 
 L.control.layers(baseLayers, overlays).addTo(mymap);
-    // L.timeDimension.earthquakes.geoJson(earthquakes).addTo(mymap);
-    // L.control.timeDimension().addTo(mymap);
-    // var player = new L.TimeDimension.Player({}, timeDimension).addTo(mymap);
-
-    // var tdWmsLayer = L.timeDimension.layer.wms(wmsLayer);
-    // tdWmsLayer.addTo(map);
 
     var legend = L.control({ position: 'bottomright' });
 
