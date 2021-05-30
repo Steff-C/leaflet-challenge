@@ -95,3 +95,28 @@ function createMap() {
       id: 'mapbox.satellite',
       accessToken: 'pk.eyJ1IjoibWlzczJzdGVwaCIsImEiOiJja250aDI2OGQwMDlzMnhsaGU1NjBsNmVtIn0.XSHxzDDCM1zE1faEnyexYw'
   });
+
+
+  var baseLayers = {
+    "High Contrast": highContrastMap,
+    "Street": streetMap,
+    "Dark": darkMap,
+    "Satellite": satellite
+};
+
+var overlays = {
+    "Earthquakes": earthquakes,
+    "Plate Boundaries": plateBoundary,
+};
+
+var mymap = L.map('mymap', {
+    center: [40, -99],
+    zoom: 4.3,
+    // timeDimension: true,
+    // timeDimensionOptions: {
+    //     timeInterval: "2018-04-01/2018-04-05",
+    //     period: "PT1H"
+    // },
+    // timeDimensionControl: true,
+    layers: [streetMap, earthquakes, plateBoundary]
+});
