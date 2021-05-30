@@ -1,60 +1,144 @@
-function createMap(bikeStations) {
+// Define earthquakes and tectonic plates GeoJSON url variables
+var earthquakesURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
+var tectonicplatesURL = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
 
-  // Create the tile layer that will be the background of our map
-  var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-    attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-    maxZoom: 18,
-    id: "light-v10",
-    accessToken: API_KEY
-  });
+// Create two layerGroups
+var earthquakes = L.layerGroup();
+var tectonicplates = L.layerGroup();
 
-  // Create a baseMaps object to hold the lightmap layer
-  var baseMaps = {
-    "Light Map": lightmap
+// Define tile layers
+var satelliteMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+  attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+  maxZoom: 18,
+  id: "mapbox.satellite",
+  accessToken: API_KEY
+});
+
+var grayscaleMap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+  attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+  tileSize: 512,
+  maxZoom: 18,
+  zoomOffset: -1,
+  id: "mapbox/light-v10",
+  accessToken: API_KEY
+});
+
+var outdoorsMap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+  attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+  tileSize: 512,
+  maxZoom: 18,
+  zoomOffset: -1,
+  id: "mapbox/outdoors-v11",
+  accessToken: API_KEY
+});
+
+var darkMap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+  attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+  maxZoom: 18,
+  id: "dark-v10",
+  accessToken: API_KEY
+});
+
+// Define a baseMaps object to hold the base layers
+var baseMaps = {
+  "Satellite Map": satelliteMap,
+  "Grayscale Map": grayscaleMap,
+  "Outdoors Map": outdoorsMap,
+  "Dark Map": darkMap
+};
+
+// Create overlay object to hold the overlay layer
+var overlayMaps = {
+  "Earthquakes": earthquakes,
+  "Tectonic Plates": tectonicplates
+};
+
+// Create the map, giving it the satelliteMap and earthquakes layers to display on load
+var myMap = L.map("mapid", {
+  center: [
+    37.09, -95.71
+  ],
+  zoom: 2,
+  layers: [satelliteMap, earthquakes]
+});
+
+// Create a layer control
+// Pass in the baseMaps and overlayMaps
+// Add the layer control to the map
+L.control.layers(baseMaps, overlayMaps, {
+  collapsed: false
+}).addTo(myMap);
+
+d3.json(earthquakesURL, function(earthquakeData) {
+  // Determine the marker size by magnitude
+  function markerSize(magnitude) {
+    return magnitude * 4;
   };
-
-  // Create an overlayMaps object to hold the bikeStations layer
-  var overlayMaps = {
-    "Bike Stations": bikeStations
-  };
-
-  // Create the map object with options
-  var map = L.map("map-id", {
-    center: [40.73, -74.0059],
-    zoom: 12,
-    layers: [lightmap, bikeStations]
-  });
-
-  // Create a layer control, pass in the baseMaps and overlayMaps. Add the layer control to the map
-  L.control.layers(baseMaps, overlayMaps, {
-    collapsed: false
-  }).addTo(map);
-}
-
-function createMarkers(response) {
-
-  // Pull the "stations" property off of response.data
-  var stations = response.data.stations;
-
-  // Initialize an array to hold bike markers
-  var bikeMarkers = [];
-
-  // Loop through the stations array
-  for (var index = 0; index < stations.length; index++) {
-    var station = stations[index];
-
-    // For each station, create a marker and bind a popup with the station's name
-    var bikeMarker = L.marker([station.lat, station.lon])
-      .bindPopup("<h3>" + station.name + "<h3><h3>Capacity: " + station.capacity + "</h3>");
-
-    // Add the marker to the bikeMarkers array
-    bikeMarkers.push(bikeMarker);
+  // Determine the marker color by depth
+  function chooseColor(depth) {
+    switch(true) {
+      case depth > 90:
+        return "red";
+      case depth > 70:
+        return "orangered";
+      case depth > 50:
+        return "orange";
+      case depth > 30:
+        return "gold";
+      case depth > 10:
+        return "yellow";
+      default:
+        return "lightgreen";
+    }
   }
 
-  // Create a layer group made from the bike markers array, pass it into the createMap function
-  createMap(L.layerGroup(bikeMarkers));
-}
+  // Create a GeoJSON layer containing the features array
+  // Each feature a popup describing the place and time of the earthquake
+  L.geoJSON(earthquakeData, {
+    pointToLayer: function (feature, latlng) {
+      return L.circleMarker(latlng, 
+        // Set the style of the markers based on properties.mag
+        {
+          radius: markerSize(feature.properties.mag),
+          fillColor: chooseColor(feature.geometry.coordinates[2]),
+          fillOpacity: 0.7,
+          color: "black",
+          stroke: true,
+          weight: 0.5
+        }
+      );
+    },
+    onEachFeature: function(feature, layer) {
+      layer.bindPopup("<h3>Location: " + feature.properties.place + "</h3><hr><p>Date: "
+      + new Date(feature.properties.time) + "</p><hr><p>Magnitude: " + feature.properties.mag + "</p>");
+    }
+  }).addTo(earthquakes);
+  // Sending our earthquakes layer to the createMap function
+  earthquakes.addTo(myMap);
 
+  // Get the tectonic plate data from tectonicplatesURL
+  d3.json(tectonicplatesURL, function(data) {
+    L.geoJSON(data, {
+      color: "orange",
+      weight: 2
+    }).addTo(tectonicplates);
+    tectonicplates.addTo(myMap);
+  });
 
-// Perform an API call to the Citi Bike API to get station information. Call createMarkers when complete
-d3.json("https://gbfs.citibikenyc.com/gbfs/en/station_information.json").then(createMarkers);
+    // Add legend
+    var legend = L.control({position: "bottomright"});
+    legend.onAdd = function() {
+      var div = L.DomUtil.create("div", "info legend"),
+      depth = [-10, 10, 30, 50, 70, 90];
+      
+      div.innerHTML += "<h3 style='text-align: center'>Depth</h3>"
+  
+      for (var i =0; i < depth.length; i++) {
+        div.innerHTML += 
+        '<i style="background:' + chooseColor(depth[i] + 1) + '"></i> ' +
+            depth[i] + (depth[i + 1] ? '&ndash;' + depth[i + 1] + '<br>' : '+');
+        }
+        return div;
+      };
+      legend.addTo(myMap);
+});
