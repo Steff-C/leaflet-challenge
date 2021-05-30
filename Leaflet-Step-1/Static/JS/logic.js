@@ -38,7 +38,7 @@ d3.json(queryUrl, function(data) {
   function mapColor(mag) {
     switch (true) {
       case mag > 5:
-        return "#ef233c";
+        return "#a62639";
       case mag > 4:
         return "#eaa92c";
       case mag > 3:
@@ -84,7 +84,7 @@ d3.json(queryUrl, function(data) {
     var div = L.DomUtil.create("div", "info legend");
 
     var grades = [0, 1, 2, 3, 4, 5];
-    var colors = ["#2d00f7", "#2ceabf", "#f72585", "#be0aff","#eaa92c", "#ef233c"];
+    var colors = ["#2d00f7", "#2ceabf", "#f72585", "#be0aff","#eaa92c", "#a62639"];
 
 
   // loop thru colors
