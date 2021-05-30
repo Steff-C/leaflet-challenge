@@ -120,3 +120,32 @@ var mymap = L.map('mymap', {
     // timeDimensionControl: true,
     layers: [streetMap, earthquakes, plateBoundary]
 });
+
+L.control.layers(baseLayers, overlays).addTo(mymap);
+    // L.timeDimension.earthquakes.geoJson(earthquakes).addTo(mymap);
+    // L.control.timeDimension().addTo(mymap);
+    // var player = new L.TimeDimension.Player({}, timeDimension).addTo(mymap);
+
+    // var tdWmsLayer = L.timeDimension.layer.wms(wmsLayer);
+    // tdWmsLayer.addTo(map);
+
+    var legend = L.control({ position: 'bottomright' });
+
+    legend.onAdd = function (map) {
+
+        var div = L.DomUtil.create('div', 'info legend'),
+            magnitude = [0, 1, 2, 3, 4, 5],
+            labels = [];
+
+        div.innerHTML += "<h4 style='margin:4px'>Magnitude</h4>"
+
+        for (var i = 0; i < magnitude.length; i++) {
+            div.innerHTML +=
+                '<i style="background:' + Color(magnitude[i] + 1) + '"></i> ' +
+                magnitude[i] + (magnitude[i + 1] ? '&ndash;' + magnitude[i + 1] + '<br>' : '+');
+        }
+
+        return div;
+    };
+    legend.addTo(mymap);
+}
