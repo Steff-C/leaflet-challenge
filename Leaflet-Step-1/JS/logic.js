@@ -49,3 +49,49 @@ d3.json(API_plates, function (geoJson) {
 })
 
 
+function Color(magnitude) {
+  if (magnitude > 5) {
+      return 'red'
+  } else if (magnitude > 4) {
+      return 'darkorange'
+  } else if (magnitude > 3) {
+      return 'tan'
+  } else if (magnitude > 2) {
+      return 'yellow'
+  } else if (magnitude > 1) {
+      return 'darkgreen'
+  } else {
+      return 'lightgreen'
+  }
+};
+
+function createMap() {
+
+  var highContrastMap = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+      maxZoom: 18,
+      id: 'mapbox.high-contrast',
+      accessToken: 'pk.eyJ1IjoibWlzczJzdGVwaCIsImEiOiJja250aDI2OGQwMDlzMnhsaGU1NjBsNmVtIn0.XSHxzDDCM1zE1faEnyexYw'
+  });
+
+  var streetMap = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+      maxZoom: 18,
+      id: 'mapbox.streets',
+      accessToken: 'pk.eyJ1IjoibWlzczJzdGVwaCIsImEiOiJja250aDI2OGQwMDlzMnhsaGU1NjBsNmVtIn0.XSHxzDDCM1zE1faEnyexYw'
+  });
+
+  var darkMap = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+      maxZoom: 18,
+      id: 'mapbox.dark',
+      accessToken: 'pk.eyJ1IjoibWlzczJzdGVwaCIsImEiOiJja250aDI2OGQwMDlzMnhsaGU1NjBsNmVtIn0.XSHxzDDCM1zE1faEnyexYw'
+  });
+
+
+  var satellite = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+      maxZoom: 18,
+      id: 'mapbox.satellite',
+      accessToken: 'pk.eyJ1IjoibWlzczJzdGVwaCIsImEiOiJja250aDI2OGQwMDlzMnhsaGU1NjBsNmVtIn0.XSHxzDDCM1zE1faEnyexYw'
+  });
